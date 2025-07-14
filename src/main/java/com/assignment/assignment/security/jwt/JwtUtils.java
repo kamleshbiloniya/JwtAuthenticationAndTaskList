@@ -4,6 +4,9 @@ package com.assignment.assignment.security.jwt;
 import com.assignment.assignment.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +29,25 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
 
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        String subject;
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            // Normal username/password login
+            subject = ((UserDetails) principal).getUsername();
+        } else if (principal instanceof OidcUser) {
+            // OIDC login (e.g., Google)
+            subject = ((OidcUser) principal).getEmail(); // or getName() depending on your use case
+        } else if (principal instanceof OAuth2User) {
+            // Fallback for other OAuth2 logins
+            subject = ((OAuth2User) principal).getAttribute("email");
+        } else {
+            throw new IllegalArgumentException("Unsupported authentication principal type: " + principal.getClass());
+        }
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
+                .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)
