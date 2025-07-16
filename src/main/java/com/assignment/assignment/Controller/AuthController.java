@@ -10,6 +10,7 @@ import com.assignment.assignment.payload.Request.SignupRequest;
 import com.assignment.assignment.payload.Response.JwtResponse;
 import com.assignment.assignment.payload.Response.MessageResponse;
 import com.assignment.assignment.services.UserDetailsImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,8 +48,8 @@ public class AuthController {
 
 
     @GetMapping("/oauth")
-    public String home() {
-        return "<a href='/oauth2/authorization/google'>Login with Google</a>";
+    public void redirectToGoogle(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/oauth2/authorization/google");
     }
 
     @GetMapping("/user")

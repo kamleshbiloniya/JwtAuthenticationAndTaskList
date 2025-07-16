@@ -20,7 +20,7 @@ public class User {
     private Long id;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 30)
     private String username;
 
     @NotBlank
@@ -28,8 +28,8 @@ public class User {
     @Email
     private String email;
 
-    @NotBlank
-    @Size(max = 120)
+
+    @Size(min = 8, max = 120)
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -45,6 +45,11 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
     }
 
     public Long getId() {

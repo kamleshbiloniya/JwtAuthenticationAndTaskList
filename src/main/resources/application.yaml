@@ -4,8 +4,8 @@ spring:
       client:
         registration:
           google:
-            client-id: XXXX
-            client-secret: XXXX
+            client-id: xxx
+            client-secret: xxx
             redirect-uri: "{baseUrl}/oauth2/callback/google"
             scope:
               - openid
